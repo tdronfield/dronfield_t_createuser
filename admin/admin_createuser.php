@@ -7,9 +7,20 @@ if(isset($_POST['submit'])){
     $data = array(
         'fname'=>trim($_POST['fname']),
         'username'=>trim($_POST['username']),
-        'password'=>trim($_POST['password']),
+        'password'=>trim($_POST['password']), 
         'email'=>trim($_POST['email']),
     );
+
+    // Send email here
+    $to = $data['email'];
+    $subject = "An Account has been Created for You";
+         
+    $message = "Username: ".$data['username'].", Password: ".$data['password'].", Login URL: ";
+         
+    $header = "From:tay.dronfield@gmail.com \r\n";
+    $header .= "Content-type: text/html\r\n";
+         
+    mail($to,$subject,$message,$header);
 
     $message = createUser($data);
 }
@@ -37,10 +48,11 @@ if(isset($_POST['submit'])){
         <input id="username" type="text" name="username" value="">
         <br><br>
 
-        <label for="password">Password</label> 
+        <p>Password will be generated for you.</p>
+        <!-- <label for="password">Password</label> 
         <input id="password" type="text" name="password" value="">
-        <!-- change type="text" to type="password" for production to hide password when typed - better UX -->
-        <br><br>
+        change type="text" to type="password" for production to hide password when typed - better UX-->
+        <br><br> 
 
         <label for="email">Email</label> 
         <input id="email" type="email" name="email" value="">
@@ -49,6 +61,14 @@ if(isset($_POST['submit'])){
         <button type="submit" name="submit">Create User</button>
         
     </form>
+
+    <?php 
+    // if( $sendMail == true ) {
+    //     echo "Message sent successfully...";
+    // }else {
+    //     echo "Message could not be sent...";
+    // }
+    ?>
     
 </body>
 </html>

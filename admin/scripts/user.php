@@ -17,7 +17,8 @@ function createUser($user_data)
         array(
             ':fname'=>$user_data['fname'],
             ':username'=>$user_data['username'],
-            ':password'=>$user_data['password'],
+            // ':password'=>$user_data['password'],
+            ':password'=>password_hash(password_generate(8), PASSWORD_DEFAULT),
             ':email'=>$user_data['email']
         )
     );
