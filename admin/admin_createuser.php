@@ -4,25 +4,59 @@ confirm_logged_in();
 
 
 if(isset($_POST['submit'])){
-    $data = array(
-        'fname'=>trim($_POST['fname']),
-        'username'=>trim($_POST['username']),
-        'password'=>trim($_POST['password']), 
-        'email'=>trim($_POST['email']),
+    //DEBUG ONLY, remove it after
+    ini_set('display_errors', 0);
+
+    header('Access-Control-Allow-Origin:*');
+    header('Content-Type: application/json; charset=UTF-8');
+    $results = [];
+    $user_name = '';
+    $user_pass = '';
+    $user_email = '';
+
+    // 1. check the submission out 
+
+
+    if (isset($_POST['username'])) {
+        $user_name = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
+    }
+
+    if (isset($_POST['email'])) {
+        $user_email = filter_var($_POST['email'], FILTER_SANITIZE_STRING);
+    }
+
+    if (isset($_POST['password'])) {
+        $user_pass = filter_var(htmlspecialchars($_POST['password']), FILTER_SANITIZE_STRING);
+    }
+
+    $results['username'] = $user_name;
+    $results['password'] = $user_pass;
+
+
+    // 2. prepare the email - print out the label and put on the package / prepare the package in certain format (for ex. does it have stamps, valid postal code?)
+
+    $email_subject = 'Welcome New User';
+    $email_recipient = 'support@website.ca';
+
+    $email_message = sprintf('Username: %s, Email: %s, Password: %s', $user_name, $user_email, $user_pass);
+
+    $email_headers = array(
+        'From'=>$user_email
     );
 
-    // Send email here
-    $to = $data['email'];
-    $subject = "An Account has been Created for You";
-         
-    $message = "Username: ".$data['username'].", Password: ".$data['password'].", Login URL: ";
-         
-    $header = "From:tay.dronfield@gmail.com \r\n";
-    $header .= "Content-type: text/html\r\n";
-         
-    mail($to,$subject,$message,$header);
+    // 3. send out the email - send out the package
 
-    $message = createUser($data);
+    $email_result = mail($email_recipient, $email_subject, $email_message, $email_headers);
+
+    if ($email_result) {
+        $results['message'] = sprintf('Thank you for contacting us, %s. You will get an email with your username and password soon.', $user_name);
+    } else {
+        $results['message'] = sprintf('We are sorry but the email did not go through.');
+    }
+
+    // results
+
+    echo json_encode($results);
 }
 ?>
 

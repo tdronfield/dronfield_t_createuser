@@ -21,6 +21,7 @@ An in-depth paragraph about your project and overview of use.
 ## Authors
 
 Taylor Dronfield [@tdronfield]
+Marisa Settimi [@msettimi13]
 
 ## License
 
